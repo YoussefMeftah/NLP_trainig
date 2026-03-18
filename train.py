@@ -181,6 +181,16 @@ def compute_metrics(eval_pred):
     ner_labels_batch = labels[0]  # (batch_size, seq_len)
     intent_labels_batch = labels[1]  # (batch_size,)
 
+    # Convert torch tensors to numpy if needed
+    if hasattr(ner_predictions, 'cpu'):
+        ner_predictions = ner_predictions.cpu().numpy()
+    if hasattr(intent_predictions, 'cpu'):
+        intent_predictions = intent_predictions.cpu().numpy()
+    if hasattr(ner_labels_batch, 'cpu'):
+        ner_labels_batch = ner_labels_batch.cpu().numpy()
+    if hasattr(intent_labels_batch, 'cpu'):
+        intent_labels_batch = intent_labels_batch.cpu().numpy()
+
     results = {}
 
     # ---- Intent Classification Metrics ----
@@ -242,20 +252,16 @@ class MultiTaskTrainer(Trainer):
         if prediction_loss_only:
             return (loss, None, None)
 
-        # Extract logits and labels for compute_metrics
-        ner_logits = outputs["ner_logits"].detach().cpu().numpy()
-        intent_logits = outputs["intent_logits"].detach().cpu().numpy()
+        # Extract logits - keep as torch tensors for accelerator
+        ner_logits = outputs["ner_logits"].detach()
+        intent_logits = outputs["intent_logits"].detach()
 
         # Stack logits: [ner_logits, intent_logits]
         predictions = (ner_logits, intent_logits)
 
-        # Extract labels
+        # Extract labels - keep as torch tensors
         ner_labels = inputs.get("ner_labels")
         intent_labels = inputs.get("intent_labels")
-        if ner_labels is not None:
-            ner_labels = ner_labels.detach().cpu().numpy()
-        if intent_labels is not None:
-            intent_labels = intent_labels.detach().cpu().numpy()
 
         labels = (ner_labels, intent_labels)
 
