@@ -215,7 +215,6 @@ def compute_metrics(eval_pred):
 # ============================================================================
 class MultiTaskTrainer(Trainer):
     """Custom trainer that handles multi-task learning."""
-
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         # Forward pass
         outputs = model(
@@ -227,36 +226,6 @@ class MultiTaskTrainer(Trainer):
         loss = outputs["loss"]
 
         return (loss, outputs) if return_outputs else loss
-    
-    def prediction_step(self, model, inputs, prediction_loss_only, ignore_keys=None):
-        """Override prediction_step to extract logits in the correct format."""
-        with torch.no_grad():
-            with self.compute_loss_context_manager():
-                outputs = model(
-                    input_ids=inputs["input_ids"],
-                    attention_mask=inputs["attention_mask"],
-                    ner_labels=inputs.get("ner_labels"),
-                    intent_labels=inputs.get("intent_labels"),
-                )
-            loss = outputs["loss"].detach()
-
-        if prediction_loss_only:
-            return (loss, None, None)
-
-        # Extract logits and labels for compute_metrics
-        ner_logits = outputs["ner_logits"].detach().cpu().numpy()
-        intent_logits = outputs["intent_logits"].detach().cpu().numpy()
-        
-        # Stack logits: [ner_logits, intent_logits]
-        predictions = (ner_logits, intent_logits)
-        
-        # Extract labels
-        ner_labels = inputs.get("ner_labels").detach().cpu().numpy() if "ner_labels" in inputs else None
-        intent_labels = inputs.get("intent_labels").detach().cpu().numpy() if "intent_labels" in inputs else None
-        
-        labels = (ner_labels, intent_labels)
-
-        return loss, predictions, labels
 
 
 # ============================================================================
@@ -343,7 +312,6 @@ def main():
         args=training_args,
         train_dataset=processed_datasets["train"],
         eval_dataset=processed_datasets["validation"],
-        compute_metrics=compute_metrics,
         callbacks=[
             EarlyStoppingCallback(
                 early_stopping_patience=2,
