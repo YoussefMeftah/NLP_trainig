@@ -216,7 +216,7 @@ def compute_metrics(eval_pred):
 class MultiTaskTrainer(Trainer):
     """Custom trainer that handles multi-task learning."""
 
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         # Forward pass
         outputs = model(
             input_ids=inputs["input_ids"],
@@ -288,7 +288,7 @@ def main():
     # ---- Training Arguments ----
     training_args = TrainingArguments(
         output_dir=args.output_dir,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         save_strategy="epoch",
         learning_rate=args.learning_rate,
         per_device_train_batch_size=args.batch_size,
