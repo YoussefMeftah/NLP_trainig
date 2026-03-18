@@ -238,7 +238,7 @@ class MultiTaskTrainer(Trainer):
                     ner_labels=inputs.get("ner_labels"),
                     intent_labels=inputs.get("intent_labels"),
                 )
-            loss = outputs["loss"].mean().detach()
+            loss = outputs["loss"].detach()
 
         if prediction_loss_only:
             return (loss, None, None)
@@ -256,7 +256,7 @@ class MultiTaskTrainer(Trainer):
         
         labels = (ner_labels, intent_labels)
 
-        return loss.item(), predictions, labels
+        return loss, predictions, labels
 
 
 # ============================================================================
