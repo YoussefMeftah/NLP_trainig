@@ -1,0 +1,9 @@
+{
+  "O": 0,
+  "B-DATE_START": 1,
+  "I-DATE_START": 2,
+  "B-DATE_END": 3,
+  "I-DATE_END": 4,
+  "B-CATEGORY": 5,
+  "I-CATEGORY": 6
+}

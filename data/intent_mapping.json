@@ -1,0 +1,7 @@
+{
+  "get_sales_by_article": 0,
+  "get_sales_by_client": 1,
+  "get_purchases_by_article": 2,
+  "get_purchases_by_supplier": 3,
+  "get_payments": 4
+}
