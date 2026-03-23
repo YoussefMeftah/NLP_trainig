@@ -199,27 +199,30 @@ class ModelTester:
 
             # NER predictions
             ner_preds = torch.argmax(outputs["ner_logits"], dim=2)[0].cpu().numpy()
-            ner_true = sample["ner_tags"]
+            
+            # Handle both "ner_tags" (raw) and "ner_labels" (preprocessed) field names
+            if "ner_labels" in sample:
+                ner_true = sample["ner_labels"]
+            elif "ner_tags" in sample:
+                ner_true = sample["ner_tags"]
+            else:
+                print(f"⚠️  Warning: Neither 'ner_labels' nor 'ner_tags' found in sample. Keys: {list(sample.keys())}")
+                continue
 
-            # Align predictions with true labels
-            offset_mapping = self.tokenizer(
-                text,
-                return_offsets_mapping=True,
-                truncation=True,
-                max_length=MAX_LENGTH,
-            )["offset_mapping"]
-
-            for token_idx, (start, end) in enumerate(offset_mapping):
-                if start != end:  # Skip special tokens
-                    if token_idx < len(ner_true) and ner_true[token_idx] != -100:
-                        all_ner_preds.append(ner_preds[token_idx])
-                        all_ner_true.append(ner_true[token_idx])
+            # Ensure arrays are proper length
+            ner_preds = ner_preds[:len(ner_true)]
+            
+            # Collect all valid (non-padding) NER predictions
+            for token_idx in range(len(ner_true)):
+                if token_idx < len(ner_preds) and ner_true[token_idx] != -100:
+                    all_ner_preds.append(ner_preds[token_idx])
+                    all_ner_true.append(ner_true[token_idx])
 
         return {
             "intent_preds": np.array(all_intent_preds),
             "intent_true": np.array(all_intent_true),
-            "ner_preds": np.array(all_ner_preds),
-            "ner_true": np.array(all_ner_true),
+            "ner_preds": np.array(all_ner_preds) if len(all_ner_preds) > 0 else np.array([]),
+            "ner_true": np.array(all_ner_true) if len(all_ner_true) > 0 else np.array([]),
         }
 
 
@@ -257,15 +260,28 @@ def print_ner_metrics(preds, true):
     print("NER PERFORMANCE METRICS")
     print("="*70)
 
+    # Handle empty predictions
+    if len(preds) == 0 or len(true) == 0:
+        print("\n⚠️  WARNING: No NER predictions found!")
+        print("   This could mean:")
+        print("   1. Dataset has no labeled NER tags (all -100)")
+        print("   2. NER tags are not being extracted from samples")
+        print("   3. Data loader is not returning ner_tags field")
+        print("\n   Run: python analyze_data.py")
+        print("   to check dataset structure.\n")
+        return
+
     overall_f1 = f1_score(true, preds, average="weighted", zero_division=0)
     print(f"\nOverall F1 (weighted): {overall_f1:.4f}")
 
     print("\nPer-Tag Performance:")
+    tags_with_data = False
     for tag_id, tag_name in ID_TO_TAG.items():
         mask = true == tag_id
         if mask.sum() == 0:
             continue
 
+        tags_with_data = True
         pred_mask = preds == tag_id
         if pred_mask.sum() == 0:
             print(f"  {tag_name:20s}: NO PREDICTIONS (recall=0)")
@@ -277,10 +293,17 @@ def print_ner_metrics(preds, true):
 
         print(f"  {tag_name:20s}: P={precision:.4f} R={recall:.4f} F1={f1:.4f}")
 
+    if not tags_with_data:
+        print("  (No tags found with data)")
+
     print("\nDetailed Classification Report:")
+    # Only include labels that actually exist in the true labels
+    unique_labels = np.unique(true)
+    target_names = [ID_TO_TAG.get(int(label), f"UNKNOWN_{label}") for label in unique_labels]
     print(classification_report(
         true, preds,
-        target_names=[ID_TO_TAG.get(i, f"UNKNOWN_{i}") for i in range(len(TAG_MAP))],
+        labels=unique_labels.astype(int).tolist(),
+        target_names=target_names,
         zero_division=0
     ))
 
@@ -440,7 +463,14 @@ def main():
 
     # Recommendations
     intent_acc = accuracy_score(results["intent_true"], results["intent_preds"])
-    ner_f1 = f1_score(results["ner_true"], results["ner_preds"], average="weighted", zero_division=0)
+    
+    # Only compute NER F1 if we have NER predictions
+    if len(results["ner_true"]) > 0:
+        ner_f1 = f1_score(results["ner_true"], results["ner_preds"], average="weighted", zero_division=0)
+    else:
+        ner_f1 = 0.0
+        print("\n⚠️  NER evaluation skipped: No valid predictions found")
+    
     print_recommendations({}, {}, intent_acc, ner_f1)
 
     # Interactive mode
