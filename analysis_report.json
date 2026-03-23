@@ -1,0 +1,243 @@
+{
+  "train": {
+    "split": "train",
+    "total_samples": 14880,
+    "intent_distribution": {
+      "get_sales_by_article": {
+        "count": 5772,
+        "percentage": 38.79
+      },
+      "get_sales_by_client": {
+        "count": 2720,
+        "percentage": 18.28
+      },
+      "get_purchases_by_article": {
+        "count": 1920,
+        "percentage": 12.9
+      },
+      "get_purchases_by_supplier": {
+        "count": 1928,
+        "percentage": 12.96
+      },
+      "get_payments": {
+        "count": 2540,
+        "percentage": 17.07
+      }
+    },
+    "ner_tag_distribution": {
+      "O": {
+        "count": 136183,
+        "percentage": 57.27
+      },
+      "B-DATE_START": {
+        "count": 49345,
+        "percentage": 20.75
+      },
+      "B-DATE_END": {
+        "count": 49718,
+        "percentage": 20.91
+      },
+      "B-CATEGORY": {
+        "count": 2540,
+        "percentage": 1.07
+      }
+    },
+    "text_length_stats": {
+      "min": 45,
+      "max": 74,
+      "avg": 60.27
+    },
+    "entity_coverage": {
+      "B-DATE_START": 100.0,
+      "B-DATE_END": 99.89,
+      "B-CATEGORY": 17.07
+    },
+    "potential_issues": [
+      {
+        "severity": "MEDIUM",
+        "type": "Intent Imbalance",
+        "description": "Intents have 3.0x difference in sample counts",
+        "affected": [
+          "get_purchases_by_article"
+        ],
+        "fix": "Add more samples for underrepresented intents"
+      },
+      {
+        "severity": "HIGH",
+        "type": "NER Tag Imbalance",
+        "description": "NER tags have 53.6x difference in occurrence",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Balance tag distribution by adding more diverse examples"
+      },
+      {
+        "severity": "LOW",
+        "type": "Low Entity Coverage",
+        "description": "Entity 'B-CATEGORY' appears in only 17.1% of samples",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Add more samples with this entity type"
+      }
+    ]
+  },
+  "val": {
+    "split": "val",
+    "total_samples": 1860,
+    "intent_distribution": {
+      "get_sales_by_article": {
+        "count": 704,
+        "percentage": 37.85
+      },
+      "get_sales_by_client": {
+        "count": 319,
+        "percentage": 17.15
+      },
+      "get_purchases_by_article": {
+        "count": 259,
+        "percentage": 13.92
+      },
+      "get_purchases_by_supplier": {
+        "count": 238,
+        "percentage": 12.8
+      },
+      "get_payments": {
+        "count": 340,
+        "percentage": 18.28
+      }
+    },
+    "ner_tag_distribution": {
+      "O": {
+        "count": 16974,
+        "percentage": 57.25
+      },
+      "B-DATE_START": {
+        "count": 6163,
+        "percentage": 20.79
+      },
+      "B-DATE_END": {
+        "count": 6173,
+        "percentage": 20.82
+      },
+      "B-CATEGORY": {
+        "count": 340,
+        "percentage": 1.15
+      }
+    },
+    "text_length_stats": {
+      "min": 45,
+      "max": 74,
+      "avg": 60.46
+    },
+    "entity_coverage": {
+      "B-DATE_START": 100.0,
+      "B-DATE_END": 99.89,
+      "B-CATEGORY": 18.28
+    },
+    "potential_issues": [
+      {
+        "severity": "HIGH",
+        "type": "NER Tag Imbalance",
+        "description": "NER tags have 49.8x difference in occurrence",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Balance tag distribution by adding more diverse examples"
+      },
+      {
+        "severity": "LOW",
+        "type": "Low Entity Coverage",
+        "description": "Entity 'B-CATEGORY' appears in only 18.3% of samples",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Add more samples with this entity type"
+      }
+    ]
+  },
+  "test": {
+    "split": "test",
+    "total_samples": 1860,
+    "intent_distribution": {
+      "get_sales_by_article": {
+        "count": 724,
+        "percentage": 38.92
+      },
+      "get_sales_by_client": {
+        "count": 361,
+        "percentage": 19.41
+      },
+      "get_purchases_by_article": {
+        "count": 221,
+        "percentage": 11.88
+      },
+      "get_purchases_by_supplier": {
+        "count": 234,
+        "percentage": 12.58
+      },
+      "get_payments": {
+        "count": 320,
+        "percentage": 17.2
+      }
+    },
+    "ner_tag_distribution": {
+      "O": {
+        "count": 17043,
+        "percentage": 57.4
+      },
+      "B-DATE_START": {
+        "count": 6145,
+        "percentage": 20.7
+      },
+      "B-DATE_END": {
+        "count": 6185,
+        "percentage": 20.83
+      },
+      "B-CATEGORY": {
+        "count": 320,
+        "percentage": 1.08
+      }
+    },
+    "text_length_stats": {
+      "min": 45,
+      "max": 74,
+      "avg": 60.27
+    },
+    "entity_coverage": {
+      "B-DATE_START": 100.0,
+      "B-DATE_END": 99.89,
+      "B-CATEGORY": 17.2
+    },
+    "potential_issues": [
+      {
+        "severity": "MEDIUM",
+        "type": "Intent Imbalance",
+        "description": "Intents have 3.3x difference in sample counts",
+        "affected": [
+          "get_purchases_by_article"
+        ],
+        "fix": "Add more samples for underrepresented intents"
+      },
+      {
+        "severity": "HIGH",
+        "type": "NER Tag Imbalance",
+        "description": "NER tags have 53.1x difference in occurrence",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Balance tag distribution by adding more diverse examples"
+      },
+      {
+        "severity": "LOW",
+        "type": "Low Entity Coverage",
+        "description": "Entity 'B-CATEGORY' appears in only 17.2% of samples",
+        "affected": [
+          "B-CATEGORY"
+        ],
+        "fix": "Add more samples with this entity type"
+      }
+    ]
+  },
+  "validation_issues": []
+}
