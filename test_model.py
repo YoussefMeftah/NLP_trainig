@@ -287,9 +287,14 @@ def print_ner_metrics(preds, true):
             print(f"  {tag_name:20s}: NO PREDICTIONS (recall=0)")
             continue
 
-        precision = precision_score(true, preds, labels=[tag_id], zero_division=0)
-        recall = recall_score(true, preds, labels=[tag_id], zero_division=0)
-        f1 = f1_score(true, preds, labels=[tag_id], zero_division=0)
+        # Calculate per-tag metrics
+        tp = ((preds == tag_id) & (true == tag_id)).sum()
+        fp = ((preds == tag_id) & (true != tag_id)).sum()
+        fn = ((preds != tag_id) & (true == tag_id)).sum()
+        
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
         print(f"  {tag_name:20s}: P={precision:.4f} R={recall:.4f} F1={f1:.4f}")
 
