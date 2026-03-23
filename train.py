@@ -286,7 +286,7 @@ def main():
     # ---- Load Datasets ----
     print("📦 Loading datasets...")
     try:
-        train_dataset = load_from_disk(f"{DATA_DIR}/train")
+        train_dataset = load_from_disk(f"/content/drive/My Drive/data/train")
         val_dataset = load_from_disk(f"{DATA_DIR}/val")
         test_dataset = load_from_disk(f"{DATA_DIR}/test")
 
