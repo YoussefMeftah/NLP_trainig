@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore")
 # Configuration
 # ============================================================================
 MODEL_NAME = "xlm-roberta-base"
-DATA_DIR = "./data"
+DATA_DIR = "/content/drive/MyDrive/NLP_trainig/data"
 MAX_LENGTH = 128
 
 # Load tag and intent mappings
