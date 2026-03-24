@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore")
 # Configuration
 # ============================================================================
 MODEL_NAME = "xlm-roberta-base"
-DATA_DIR = "/content/drive/MyDrive/NLP_trainig/data"
+DATA_DIR = "/content/drive/MyDrive/data"
 MAX_LENGTH = 128
 
 # Load tag and intent mappings
@@ -286,7 +286,7 @@ def main():
     # ---- Load Datasets ----
     print("📦 Loading datasets...")
     try:
-        train_dataset = load_from_disk(f"/content/drive/My Drive/data/train")
+        train_dataset = load_from_disk(f"{DATA_DIR}/train")
         val_dataset = load_from_disk(f"{DATA_DIR}/val")
         test_dataset = load_from_disk(f"{DATA_DIR}/test")
 
