@@ -2,8 +2,11 @@
 Model Testing & Inference Script
 Test the trained XLM-RoBERTa model and diagnose data/model issues.
 
-Usage:
+Usage (Local):
     python test_model.py --model_dir ./xlm_roberta_model --test_samples 50
+
+Usage (Colab):
+    python test_model.py --model_dir /content/drive/MyDrive/xlm_roberta_model
 """
 
 import json
@@ -21,11 +24,36 @@ from sklearn.metrics import (
 import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import defaultdict, Counter
+import sys
+
+# ============================================================================
+# Colab Setup
+# ============================================================================
+def setup_colab():
+    """Mount Google Drive if running in Colab."""
+    if 'google.colab' in sys.modules:
+        try:
+            from google.colab import drive
+            drive.mount('/content/drive', force_remount=False)
+            print("✓ Google Drive mounted at /content/drive")
+            return True
+        except Exception as e:
+            print(f"⚠️  Colab mode detected but Drive mount failed: {e}")
+            return False
+    return False
+
+# Try to mount Drive in Colab
+IS_COLAB = setup_colab()
 
 # ============================================================================
 # Configuration & Setup
 # ============================================================================
-DATA_DIR = "/content/drive/MyDrive/data"
+# Set data directory based on environment
+if IS_COLAB:
+    DATA_DIR = "/content/drive/MyDrive/data"
+else:
+    DATA_DIR = "./data"
+
 MAX_LENGTH = 128
 
 # Load mappings
@@ -115,14 +143,9 @@ class ModelTester:
         weights_path = os.path.join(model_path, "model.safetensors")
         if os.path.exists(weights_path):
             weights = load_file(weights_path)
-            # Only load classifier heads, skip encoder weights
-            classifier_weights = {k: v for k, v in weights.items() 
-                                 if 'intent_classifier' in k or 'ner_classifier' in k}
-            if classifier_weights:
-                self.model.load_state_dict(classifier_weights, strict=False)
-                print(f"✓ Loaded {len(classifier_weights)} classifier weights")
-            else:
-                print("⚠️  No classifier weights found in checkpoint")
+            # Load full model state (encoder + classifier heads)
+            self.model.load_state_dict(weights, strict=False)
+            print(f"✓ Loaded {len(weights)} model weights (encoder + classifiers)")
         else:
             print(f"⚠️  Warning: model.safetensors not found at {weights_path}")
         
