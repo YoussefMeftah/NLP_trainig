@@ -380,9 +380,31 @@ def main():
 
     # ---- Save Model ----
     print(f"\n💾 Saving model to {args.output_dir}...")
-    # Save only the encoder since custom model doesn't inherit from PreTrainedModel
+    
+    # Save encoder with pretrained format
     model.encoder.save_pretrained(args.output_dir)
+    
+    # Save complete model state_dict (including classifier heads) as safetensors
+    from safetensors.torch import save_file
+    model_state = model.state_dict()
+    save_file(model_state, f"{args.output_dir}/model.safetensors")
+    print(f"   ✓ Saved full model state_dict with {len(model_state)} weight tensors")
+    
+    # Save tokenizer
     tokenizer.save_pretrained(args.output_dir)
+    
+    # Save config with model architecture info
+    config = {
+        "model_name": MODEL_NAME,
+        "num_labels_intent": NUM_LABELS_INTENT,
+        "num_labels_ner": NUM_LABELS_NER,
+        "max_length": MAX_LENGTH,
+        "intent_map": INTENT_MAP,
+        "tag_map": TAG_MAP,
+    }
+    with open(f"{args.output_dir}/model_config.json", "w") as f:
+        json.dump(config, f, indent=2)
+    print(f"   ✓ Saved model config")
 
     # Save results
     with open(f"{args.output_dir}/test_results.json", "w") as f:
