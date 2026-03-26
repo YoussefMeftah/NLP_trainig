@@ -25,7 +25,7 @@ from collections import defaultdict, Counter
 # ============================================================================
 # Configuration & Setup
 # ============================================================================
-DATA_DIR = "./data"
+DATA_DIR = "/content/drive/MyDrive/data"
 MAX_LENGTH = 128
 
 # Load mappings
@@ -100,20 +100,15 @@ class XLMRobertaForIntentAndNER(nn.Module):
 class ModelTester:
     def __init__(self, model_path, device="cuda"):
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
-        self.tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-        # Create model architecture
+        # Load the saved encoder and recreate the full model
+        base_model = AutoModel.from_pretrained(model_path)
         self.model = XLMRobertaForIntentAndNER(
-            model_name="xlm-roberta-base",
+            model_name=model_path,
             num_labels_intent=len(INTENT_MAP),
             num_labels_ner=len(TAG_MAP),
         )
-        
-        # Load fine-tuned weights from checkpoint
-        from safetensors.torch import load_file
-        weights = load_file(f"{model_path}/model.safetensors")
-        self.model.load_state_dict(weights)
-        
         self.model.to(self.device)
         self.model.eval()
 
