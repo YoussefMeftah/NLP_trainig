@@ -115,7 +115,14 @@ class ModelTester:
         weights_path = os.path.join(model_path, "model.safetensors")
         if os.path.exists(weights_path):
             weights = load_file(weights_path)
-            self.model.load_state_dict(weights)
+            # Only load classifier heads, skip encoder weights
+            classifier_weights = {k: v for k, v in weights.items() 
+                                 if 'intent_classifier' in k or 'ner_classifier' in k}
+            if classifier_weights:
+                self.model.load_state_dict(classifier_weights, strict=False)
+                print(f"✓ Loaded {len(classifier_weights)} classifier weights")
+            else:
+                print("⚠️  No classifier weights found in checkpoint")
         else:
             print(f"⚠️  Warning: model.safetensors not found at {weights_path}")
         
