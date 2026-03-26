@@ -100,15 +100,20 @@ class XLMRobertaForIntentAndNER(nn.Module):
 class ModelTester:
     def __init__(self, model_path, device="cuda"):
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
-        # Load the saved encoder and recreate the full model
-        base_model = AutoModel.from_pretrained(model_path)
+        # Create model architecture
         self.model = XLMRobertaForIntentAndNER(
-            model_name=model_path,
+            model_name="xlm-roberta-base",
             num_labels_intent=len(INTENT_MAP),
             num_labels_ner=len(TAG_MAP),
         )
+        
+        # Load fine-tuned weights from checkpoint
+        from safetensors.torch import load_file
+        weights = load_file(f"{model_path}/model.safetensors")
+        self.model.load_state_dict(weights)
+        
         self.model.to(self.device)
         self.model.eval()
 
