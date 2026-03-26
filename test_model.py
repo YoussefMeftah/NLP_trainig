@@ -102,13 +102,23 @@ class ModelTester:
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-        # Load the saved encoder and recreate the full model
-        base_model = AutoModel.from_pretrained(model_path)
+        # Create model architecture
         self.model = XLMRobertaForIntentAndNER(
-            model_name=model_path,
+            model_name="xlm-roberta-base",
             num_labels_intent=len(INTENT_MAP),
             num_labels_ner=len(TAG_MAP),
         )
+        
+        # Load fine-tuned weights from model.safetensors
+        from safetensors.torch import load_file
+        import os
+        weights_path = os.path.join(model_path, "model.safetensors")
+        if os.path.exists(weights_path):
+            weights = load_file(weights_path)
+            self.model.load_state_dict(weights)
+        else:
+            print(f"⚠️  Warning: model.safetensors not found at {weights_path}")
+        
         self.model.to(self.device)
         self.model.eval()
 
