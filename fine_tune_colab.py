@@ -269,6 +269,10 @@ data_collator = DataCollator(tokenizer)
 # ============================================================================
 print("\n⚙️  Setting up fine-tuning...")
 
+# Create output directory BEFORE training (so Trainer can save checkpoints)
+Path(MODEL_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+print(f"✓ Created output directory: {MODEL_OUTPUT_DIR}")
+
 # Move model to device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -284,10 +288,10 @@ training_args = TrainingArguments(
     weight_decay=0.01,
     logging_steps=50,
     eval_strategy="steps",
-    eval_steps=100,
+    eval_steps=200,
     save_strategy="steps",
-    save_steps=100,
-    save_total_limit=2,
+    save_steps=200,
+    save_total_limit=1,
     load_best_model_at_end=True,
     metric_for_best_model="eval_loss",
     seed=42,
@@ -323,9 +327,6 @@ print(f"Test NER F1: {test_results.get('eval_ner_f1', 0):.4f}")
 # ============================================================================
 print(f"\n💾 Saving fine-tuned model to Google Drive...")
 print(f"   Location: {MODEL_OUTPUT_DIR}")
-
-# Create output directory
-Path(MODEL_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
 # Save model weights using safetensors
 from safetensors.torch import save_file
