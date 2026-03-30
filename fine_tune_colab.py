@@ -25,6 +25,8 @@ from sklearn.metrics import f1_score, accuracy_score
 import warnings
 warnings.filterwarnings("ignore")
 import sys
+import shutil
+import glob
 
 # ============================================================================
 # Configuration - Google Drive Paths
@@ -273,6 +275,18 @@ print("\n⚙️  Setting up fine-tuning...")
 Path(MODEL_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 print(f"✓ Created output directory: {MODEL_OUTPUT_DIR}")
 
+# Clean up old checkpoints to free space
+import shutil
+import glob
+checkpoint_pattern = f"{MODEL_OUTPUT_DIR}/checkpoint-*"
+old_checkpoints = glob.glob(checkpoint_pattern)
+for checkpoint in old_checkpoints:
+    try:
+        shutil.rmtree(checkpoint)
+        print(f"✓ Removed old checkpoint: {checkpoint}")
+    except Exception as e:
+        print(f"⚠️  Could not remove {checkpoint}: {e}")
+
 # Move model to device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -287,15 +301,19 @@ training_args = TrainingArguments(
     learning_rate=1e-5,
     weight_decay=0.01,
     logging_steps=50,
-    eval_strategy="steps",
-    eval_steps=200,
-    save_strategy="steps",
-    save_steps=200,
-    save_total_limit=1,
+    eval_strategy="epoch",  # Evaluate only at the end of each epoch
+    save_strategy="epoch",  # Save only at the end of each epoch
+    save_total_limit=1,  # Keep only the best model
     load_best_model_at_end=True,
     metric_for_best_model="eval_loss",
     seed=42,
     report_to="none",
+    fp16=torch.cuda.is_available(),  # Use mixed precision if GPU available
+    gradient_checkpointing=True,  # Reduce memory usage
+    optim="adamw_8bit",  # Memory-efficient optimizer (if bitsandbytes installed)
+    dataloader_num_workers=4,  # Parallel data loading
+    dataloader_pin_memory=True,
+    remove_unused_columns=True,  # Remove unnecessary columns to save memory
 )
 
 trainer = Trainer(
