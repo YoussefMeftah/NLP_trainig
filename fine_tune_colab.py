@@ -195,31 +195,53 @@ test_dataset = test_dataset.map(preprocess_data, batched=True, remove_columns=["
 # ============================================================================
 print("\n🔄 Loading existing model for fine-tuning...")
 try:
-    # Load model config
-    with open(f"{OLD_MODEL_DIR}/model_config.json") as f:
-        config = json.load(f)
+    # Try to load model config from multiple possible locations
+    config_path = None
+    for potential_path in [
+        f"{OLD_MODEL_DIR}/model_config.json",
+        f"{OLD_MODEL_DIR}/config.json"
+    ]:
+        if Path(potential_path).exists():
+            config_path = potential_path
+            break
+    
+    if config_path:
+        with open(config_path) as f:
+            config = json.load(f)
+        model_name = config.get("model_name", "xlm-roberta-base")
+        num_labels_intent = config.get("num_labels_intent", NUM_LABELS_INTENT)
+        num_labels_ner = config.get("num_labels_ner", NUM_LABELS_NER)
+    else:
+        raise FileNotFoundError("No config file found")
 
-    model_name = config["model_name"]
-    num_labels_intent = config["num_labels_intent"]
-    num_labels_ner = config["num_labels_ner"]
-
-    # Initialize and load model
+    # Initialize model
     model = XLMRobertaForIntentAndNER(
         model_name=model_name,
         num_labels_intent=num_labels_intent,
         num_labels_ner=num_labels_ner
     )
 
-    # Load existing weights
-    from safetensors.torch import load_file
-    state_dict = load_file(f"{OLD_MODEL_DIR}/model.safetensors")
-    model.load_state_dict(state_dict)
+    # Try to load existing weights from safetensors
+    try:
+        from safetensors.torch import load_file
+        model_path = f"{OLD_MODEL_DIR}/model.safetensors"
+        if Path(model_path).exists():
+            state_dict = load_file(model_path)
+            # Only load compatible weights
+            model_state = model.state_dict()
+            compatible_weights = {k: v for k, v in state_dict.items() if k in model_state}
+            model.load_state_dict(compatible_weights, strict=False)
+            print(f"✓ Loaded {len(compatible_weights)}/{len(state_dict)} weights from existing model")
+        else:
+            print("⚠️  model.safetensors not found, will train from scratch")
+    except Exception as e:
+        print(f"⚠️  Could not load weights: {e}. Will train from scratch.")
 
-    print("✓ Model loaded successfully from:", OLD_MODEL_DIR)
+    print("✓ Model initialized successfully")
 
 except Exception as e:
-    print(f"✗ Error loading model: {e}")
-    print("Creating new model instead...")
+    print(f"⚠️  Error loading existing model: {e}")
+    print("Creating new model from scratch...")
     model = XLMRobertaForIntentAndNER(
         model_name="xlm-roberta-base",
         num_labels_intent=NUM_LABELS_INTENT,
@@ -272,7 +294,6 @@ print("\n⚙️  Setting up fine-tuning...")
 
 training_args = TrainingArguments(
     output_dir=MODEL_OUTPUT_DIR,
-    overwrite_output_dir=True,
     num_train_epochs=2,  # Fine-tune for 2 epochs (not 3+)
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
