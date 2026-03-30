@@ -32,11 +32,36 @@ intents = {
             "afficher les ventes par article du {start} au {end}",
             "ventes par article entre {start} et {end}",
             "donne moi les ventes des articles du {start} au {end}",
-            "statistiques des ventes articles du {start} au {end}"
+            "statistiques des ventes articles du {start} au {end}",
+            "montrez les ventes articles du {start} au {end}",
+            "je veux connaître les ventes par article du {start} au {end}",
+            "tableau ventes articles {start} à {end}",
+            "quelles sont les ventes des articles du {start} au {end}",
+            "ventes produits du {start} au {end}",
+            "détail des ventes par article de {start} à {end}",
+            "génère un rapport ventes articles du {start} au {end}",
+            "sales by article from {start} to {end}",
+            "affiche ventes par produit entre {start} et {end}",
+            "ventes marchandises {start} {end}",
+            "donne le chiffre d'affaires par article du {start} au {end}",
+        ],
+        "paraphrases": [
+            # Different sentence structures
+            "je souhaite voir les ventes par article pour la période du {start} au {end}",
+            "peux-tu afficher un rapport détaillé des ventes articles entre {start} et {end}",
+            "merci de me fournir les ventes par article depuis le {start} jusqu'au {end}",
+            "montre-moi combien d'articles ont été vendus du {start} au {end}",
+            "je dois obtenir les statistiques de ventes pour chaque article de {start} à {end}",
+            "affiche le volume de ventes par référence article pour {start} - {end}",
+            "peux-tu générer un bilan des ventes par produit entre le {start} et le {end}",
+            "quand je veux voir les totales de ventes par article, période {start} à {end}",
+            "donne moi un détail complet des articles vendus du {start} au {end}",
+            "j'aimerais connaître les ventes par article pour la plage {start} au {end}",
         ],
         "synonyms": {
-            "ventes": ["chiffre d'affaires", "transactions", "revenus"],
-            "article": ["produit", "item", "marchandise"]
+            "ventes": ["chiffre d'affaires", "transactions", "revenus", "CA", "ventes brutes"],
+            "article": ["produit", "item", "marchandise", "bien", "référence"],
+            "afficher": ["montrez", "montrer", "affiche", "génère"],
         }
     },
     "get_sales_by_client": {
@@ -44,30 +69,110 @@ intents = {
             "afficher les ventes par client du {start} au {end}",
             "ventes par client entre {start} et {end}",
             "donne moi les ventes des clients du {start} au {end}",
-            "chiffre d'affaires par client du {start} au {end}"
+            "chiffre d'affaires par client du {start} au {end}",
+            "montrez les ventes clients du {start} au {end}",
+            "sales by customer from {start} to {end}",
+            "statistiques ventes clients {start} à {end}",
+            "je veux voir les ventes par client du {start} au {end}",
+            "tableau des ventes par client du {start} au {end}",
+            "ventes acheteur du {start} au {end}",
+            "détail ventes par client de {start} à {end}",
+            "rapport ventes clients du {start} au {end}",
+            "affiche les ventes clts du {start} au {end}",
+            "quelles ventes par client du {start} au {end}",
+            "ventes partenaires du {start} au {end}",
+        ],
+        "paraphrases": [
+            # Different sentence structures
+            "je souhaite connaître les ventes réalisées par chaque client entre {start} et {end}",
+            "peux-tu afficher un rapport détaillé des ventes par client pour {start} - {end}",
+            "merci de me fournir le chiffre d'affaires par client du {start} au {end}",
+            "montre-moi les totales de ventes pour chaque client entre le {start} et le {end}",
+            "j'aimerais voir un détail des ventes cliente pour la période {start} à {end}",
+            "affiche le montant des ventes associées à chaque client du {start} au {end}",
+            "peux-tu générer un bilan des ventes par acheteur entre {start} et {end}",
+            "quand je veux un résumé des ventes par client, période {start} à {end}",
+            "donne moi un détail complet des ventes par cliente pour {start} - {end}",
+            "j'aimerais connaître les ventes réalisées avec chaque client, plage {start} au {end}",
         ],
         "synonyms": {
-            "client": ["acheteur", "partenaire", "clt"]
+            "client": ["acheteur", "partenaire", "clt", "customer", "acheteurs"],
+            "ventes": ["chiffre d'affaires", "revenus", "transactions", "CA"],
+            "afficher": ["montrez", "montrer", "affiche", "génère"],
         }
     },
     "get_purchases_by_article": {
         "templates": [
             "afficher les achats par article du {start} au {end}",
             "achats par article entre {start} et {end}",
-            "statistiques des achats articles du {start} au {end}"
+            "statistiques des achats articles du {start} au {end}",
+            "donne moi les achats articles du {start} au {end}",
+            "montrez les achats par produit du {start} au {end}",
+            "purchases by article from {start} to {end}",
+            "tableau achats articles {start} à {end}",
+            "détail achats par article du {start} au {end}",
+            "je veux voir les achats articles du {start} au {end}",
+            "affiche les achats par marchandise du {start} au {end}",
+            "rapport achats articles du {start} au {end}",
+            "affiche achats articles du {start} au {end}",
+            "achats produits du {start} au {end}",
+            "commandes par article du {start} au {end}",
+            "approvisionnements articles {start} {end}",
+        ],
+        "paraphrases": [
+            # Different sentence structures
+            "je souhaite voir les achats par article pour la période du {start} au {end}",
+            "peux-tu afficher un rapport détaillé des achats articles entre {start} et {end}",
+            "merci de me fournir les achats par article depuis le {start} jusqu'au {end}",
+            "montre-moi les quantités achetées pour chaque article du {start} au {end}",
+            "j'aimerais connaître les achats par référence article pour {start} - {end}",
+            "affiche le montant des approvisionnements par article du {start} au {end}",
+            "peux-tu générer un bilan des achats par produit entre {start} et {end}",
+            "quand je veux voir les totales d'achats par article, période {start} à {end}",
+            "donne moi un détail complet des approvisionnements par article pour {start} - {end}",
+            "j'aimerais obtenir les statistiques d'achats par article, plage {start} au {end}",
         ],
         "synonyms": {
-            "achats": ["approvisionnements", "commandes"]
+            "achats": ["approvisionnements", "commandes", "acquisitions", "achats totaux"],
+            "article": ["produit", "item", "marchandise", "bien", "référence"],
+            "afficher": ["montrez", "montrer", "affiche", "génère"],
         }
     },
     "get_purchases_by_supplier": {
         "templates": [
             "afficher les achats par fournisseur du {start} au {end}",
             "achats par fournisseur entre {start} et {end}",
-            "statistiques fournisseurs du {start} au {end}"
+            "statistiques fournisseurs du {start} au {end}",
+            "donne moi les achats des fournisseurs du {start} au {end}",
+            "montrez les achats par fournisseur du {start} au {end}",
+            "purchases by supplier from {start} to {end}",
+            "tableau achats fournisseurs {start} à {end}",
+            "détail achats par fournisseur du {start} au {end}",
+            "je veux voir les achats par fournisseur du {start} au {end}",
+            "rapport achats fournisseurs du {start} au {end}",
+            "affiche achats par supplier du {start} au {end}",
+            "achats partenaires du {start} au {end}",
+            "commandes fournisseurs du {start} au {end}",
+            "affiche les achats par vendeur du {start} au {end}",
+            "approvisionnements fournisseurs {start} {end}",
+        ],
+        "paraphrases": [
+            # Different sentence structures
+            "je souhaite connaître les achats effectués auprès de chaque fournisseur entre {start} et {end}",
+            "peux-tu afficher un rapport détaillé des achats par fournisseur pour {start} - {end}",
+            "merci de me fournir les statistiques d'achats par fournisseur du {start} au {end}",
+            "montre-moi le montant des achats pour chaque fournisseur entre le {start} et le {end}",
+            "j'aimerais voir un détail des achats par partenaire fournisseur pour {start} à {end}",
+            "affiche le volume des commandes passées auprès de chaque fournisseur du {start} au {end}",
+            "peux-tu générer un bilan des achats par vendeur entre {start} et {end}",
+            "quand je veux un résumé des achats par fournisseur, période {start} à {end}",
+            "donne moi un détail complet des approvisionnements par fournisseur pour {start} - {end}",
+            "j'aimerais obtenir les statistiques d'achats auprès de chaque fournisseur, plage {start} au {end}",
         ],
         "synonyms": {
-            "fournisseur": ["frs", "partenaire", "vendeur"]
+            "fournisseur": ["frs", "partenaire", "vendeur", "supplier", "fournisseurs"],
+            "achats": ["commandes", "approvisionnements", "acquisitions"],
+            "afficher": ["montrez", "montrer", "affiche", "génère"],
         }
     },
     "get_payments": {
@@ -75,10 +180,46 @@ intents = {
             "afficher les paiements groupés par {category} du {start} au {end}",
             "répartition des paiements par {category} entre {start} et {end}",
             "statistiques des paiements répartis par {category} du {start} au {end}",
-            "donne moi les paiements ventilés par {category} du {start} au {end}"
+            "donne moi les paiements ventilés par {category} du {start} au {end}",
+            "paiements par {category} du {start} au {end}",
+            "montrez les paiements par {category} du {start} au {end}",
+            "payments by {category} from {start} to {end}",
+            "tableau paiements par {category} {start} à {end}",
+            "détail paiements {category} du {start} au {end}",
+            "je veux voir les paiements par {category} du {start} au {end}",
+            "rapport paiements {category} du {start} au {end}",
+            "affiche les paiements par {category} du {start} au {end}",
+            "répartition paiements {category} entre {start} et {end}",
+            "donne paiements groupés {category} du {start} au {end}",
+            "paiement groupé par {category} de {start} à {end}",
         ],
-        "categories": {"client": "client", "mode": "mode", "année": "année", "tous": "tous"},
-        "synonyms": {}
+        "paraphrases": [
+            # Different sentence structures
+            "je souhaite voir les détails des paiements ventilés par {category} pour {start} à {end}",
+            "peux-tu afficher un rapport détaillé des paiements par {category} entre {start} et {end}",
+            "merci de me fournir la répartition des paiements par {category} du {start} au {end}",
+            "montre-moi combien a été payé par {category} entre le {start} et le {end}",
+            "j'aimerais connaître le détail des paiements groupés par {category} pour {start} - {end}",
+            "affiche le montant total des paiements répartis par {category} du {start} au {end}",
+            "peux-tu générer un bilan des paiements par {category} entre {start} et {end}",
+            "quand je veux un résumé des paiements par {category}, période {start} à {end}",
+            "donne moi un détail complet des paiements ventilés par {category} pour {start} - {end}",
+            "j'aimerais obtenir les statistiques de paiements par {category}, plage {start} au {end}",
+        ],
+        "categories": {
+            "client": "client", 
+            "mode": "mode", 
+            "mode de paiement": "mode de paiement",
+            "année": "année", 
+            "année fiscale": "année fiscale",
+            "tous": "tous",
+            "type": "type",
+            "devise": "devise",
+        },
+        "synonyms": {
+            "paiements": ["versements", "règlements", "transactions"],
+            "afficher": ["montrez", "montrer", "affiche", "génère"],
+        }
     }
 }
 
@@ -90,51 +231,177 @@ ENTITY_PATTERNS = {}
 # ----------------------------
 # Utilities
 # ----------------------------
-def random_date():
+def get_relative_date_expression():
+    """Generate random relative date expressions in French"""
+    expressions = [
+        # Current periods
+        "ce mois",
+        "ce mois-ci",
+        "cette semaine",
+        "cette semaine-ci",
+        "aujourd'hui",
+        "ce jour",
+        
+        # Past periods
+        "le mois dernier",
+        "la semaine dernière",
+        "hier",
+        "l'année dernière",
+        "année dernière",
+        "le trimestre dernier",
+        "les 3 derniers mois",
+        "les 3 dernières semaines",
+        "les 7 derniers jours",
+        "les 30 derniers jours",
+        "les 12 derniers mois",
+        
+        # Month references
+        "mois 1",
+        "mois 2",
+        "mois 3",
+        "mois 4",
+        "mois 5",
+        "mois 6",
+        "mois 7",
+        "mois 8",
+        "mois 9",
+        "mois 10",
+        "mois 11",
+        "mois 12",
+        
+        # Quarter references
+        "la premier trimestre de cette année",
+        "le deuxième trimestre de cette année",
+        "le troisième trimestre de cette année",
+        "le quatrième trimestre de cette année",
+        "le premier trimestre",
+        "deuxième trimestre",
+        "trimestre 1",
+        "trimestre 2",
+        "trimestre 3",
+        "trimestre 4",
+        
+        # Future periods
+        "le mois prochain",
+        "la semaine prochaine",
+        "demain",
+        "l'année prochaine",
+        "année prochaine",
+        "le trimestre prochain",
+    ]
+    return random.choice(expressions)
+
+
+def random_date(format_type=None):
+    """Generate random date with optional format variation"""
     start = datetime(2023, 1, 1)
     end = datetime(2025, 12, 31)
     delta = end - start
-    return (start + timedelta(days=random.randint(0, delta.days))).strftime("%Y-%m-%d")
+    date = start + timedelta(days=random.randint(0, delta.days))
+    
+    # Random format variations
+    if format_type is None:
+        format_type = random.choice([0, 1, 2, 3])
+    
+    if format_type == 0:  # YYYY-MM-DD
+        return date.strftime("%Y-%m-%d")
+    elif format_type == 1:  # DD/MM/YYYY
+        return date.strftime("%d/%m/%Y")
+    elif format_type == 2:  # YYYY/MM/DD
+        return date.strftime("%Y/%m/%d")
+    elif format_type == 3:  # DD-MM-YYYY
+        return date.strftime("%d-%m-%Y")
+    else:  # Text format (Jan, Feb, etc.)
+        return date.strftime("%B %d, %Y")
 
 def generate_date_range():
-    d1 = random_date()
-    d2 = random_date()
+    """Generate date range with consistent or varied formats"""
+    # Decide on format (keep consistent within a range for realism)
+    fmt = random.choice([0, 1, 2, 3])
+    d1 = random_date(format_type=fmt)
+    d2 = random_date(format_type=fmt)
     return min(d1, d2), max(d1, d2)
 
-def apply_variations(text, synonyms):
-    """Generate variations using synonyms with word-boundary matching"""
+def apply_variations(text, synonyms, paraphrases=None):
+    """Generate variations using synonyms and paraphrases with better coverage"""
     seen = {text}
     variations = [text]
+    
+    # Add paraphrases (if provided)
+    if paraphrases:
+        for paraphrase in paraphrases[:10]:  # Limit paraphrases to avoid explosion
+            if paraphrase not in seen:
+                seen.add(paraphrase)
+                variations.append(paraphrase)
+    
+    # Single word replacements
     for word, replacements in synonyms.items():
         for replacement in replacements:
-            # Replace all occurrences of the word
             new_text = text.replace(word, replacement)
             if new_text not in seen:
                 seen.add(new_text)
                 variations.append(new_text)
-    return variations
+    
+    # Multi-word replacements (combine multiple synonyms)
+    if len(synonyms) > 1:
+        words = list(synonyms.keys())
+        # Try replacing 2 words at a time
+        for i, word1 in enumerate(words):
+            for word2 in words[i+1:]:
+                rep1 = random.choice(synonyms[word1])
+                rep2 = random.choice(synonyms[word2])
+                new_text = text.replace(word1, rep1).replace(word2, rep2)
+                if new_text not in seen and len(variations) < 100:  # Limit variations
+                    seen.add(new_text)
+                    variations.append(new_text)
+    
+    return variations[:30]  # Return top 30 variations to avoid explosion
 
 def add_noise(text):
-    """Add minor variations (lowercase, abbreviations)"""
+    """Add multiple types of text variations"""
     seen = {text}
     variations = [text]
 
+    # Lowercase
     lower_text = text.lower()
     if lower_text not in seen:
         seen.add(lower_text)
         variations.append(lower_text)
 
-    noise_map = {
+    # Uppercase
+    upper_text = text.upper()
+    if upper_text not in seen:
+        seen.add(upper_text)
+        variations.append(upper_text)
+
+    # Mixed case
+    title_text = text.title()
+    if title_text not in seen:
+        seen.add(title_text)
+        variations.append(title_text)
+
+    # Abbreviations
+    abbrev_map = {
         "clients": "clts",
         "articles": "arts",
+        "fournisseur": "frs",
+        "fournisseurs": "frss",
+        "client": "clt",
+        "article": "art",
     }
 
-    for original, abbrev in noise_map.items():
+    for original, abbrev in abbrev_map.items():
         if original in text:
             new_text = text.replace(original, abbrev)
             if new_text not in seen:
                 seen.add(new_text)
                 variations.append(new_text)
+    
+    # Extra spaces
+    extra_space_text = re.sub(r'\s+', '  ', text)  # Double spaces
+    if extra_space_text not in seen:
+        seen.add(extra_space_text)
+        variations.append(extra_space_text)
 
     return variations
 
@@ -224,7 +491,7 @@ def align_tags_to_tokens(text, entities, tokenizer):
 # ----------------------------
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 
-def _generate_samples_for_text(text, intent_name, synonyms, entities_to_find):
+def _generate_samples_for_text(text, intent_name, synonyms, entities_to_find, paraphrases=None):
     """
     Generate training samples from a single text.
 
@@ -233,12 +500,13 @@ def _generate_samples_for_text(text, intent_name, synonyms, entities_to_find):
         intent_name: Intent identifier
         synonyms: Dict of word -> replacement list
         entities_to_find: List of tuples (value, entity_type)
+        paraphrases: List of paraphrased template variations
 
     Returns:
         List of sample dictionaries
     """
     samples = []
-    for syn_var in apply_variations(text, synonyms):
+    for syn_var in apply_variations(text, synonyms, paraphrases):
         for noisy_var in add_noise(syn_var):
             entities = []
             for entity_value, entity_type in entities_to_find:
@@ -260,7 +528,7 @@ def _generate_samples_for_text(text, intent_name, synonyms, entities_to_find):
     return samples
 
 data_samples = []
-REPEAT_FACTOR = 200  # Reduced from 200 to avoid duplicates
+REPEAT_FACTOR = 20  # Increased from 200 - generate 50x more unique samples to prevent overfitting
 
 for intent_name, intent_data in intents.items():
     templates = intent_data["templates"]
