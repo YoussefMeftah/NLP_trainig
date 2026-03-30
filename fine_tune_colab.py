@@ -1,11 +1,6 @@
 """
-Google Colab Fine-tuning Script (Google Drive Only)
+Google Colab Fine-tuning Script
 Fine-tune the XLM-RoBERTa model using data from Google Drive and save results to Google Drive.
-
-IMPORTANT: This script is designed for Google Colab ONLY!
-It requires all data and will save all results to Google Drive under:
-  /My Drive/data/           (input training data)
-  /My Drive/xlm_roberta_model_finetuned/  (output fine-tuned model)
 
 Run in Colab:
     !git clone <your_repo_url>
@@ -32,45 +27,19 @@ warnings.filterwarnings("ignore")
 import sys
 
 # ============================================================================
-# Google Colab Setup (REQUIRED)
-# ============================================================================
-def setup_colab():
-    """Mount Google Drive - REQUIRED for this script"""
-    if 'google.colab' not in sys.modules:
-        raise RuntimeError(
-            "❌ This script is for Google Colab ONLY!\n"
-            "It requires Google Drive access.\n\n"
-            "To use locally, modify the script to use local paths."
-        )
-    
-    try:
-        from google.colab import drive
-        drive.mount('/content/drive', force_remount=False)
-        print("✓ Google Drive mounted at /content/drive")
-        return True
-    except Exception as e:
-        raise RuntimeError(f"Failed to mount Google Drive: {e}")
-
-# Mount Drive (will fail if not in Colab)
-print("🔐 Checking Colab environment...")
-setup_colab()
-
-# ============================================================================
-# Configuration - Google Drive ONLY
+# Configuration - Google Drive Paths
 # ============================================================================
 DATA_DIR = "/content/drive/MyDrive/data"
 MODEL_OUTPUT_DIR = "/content/drive/MyDrive/xlm_roberta_model_finetuned"
 OLD_MODEL_DIR = "/content/drive/MyDrive/xlm_roberta_model"
-SCRIPT_OUTPUT_DIR = "/content/drive/MyDrive"
 
 MAX_LENGTH = 128
 
 print("\n" + "=" * 70)
-print("GOOGLE COLAB FINE-TUNING (Google Drive)")
+print("GOOGLE COLAB FINE-TUNING")
 print("=" * 70)
 print(f"Input data:        {DATA_DIR}")
 print(f"Output model:      {MODEL_OUTPUT_DIR}")
-print(f"Saving script to:  {SCRIPT_OUTPUT_DIR}")
 print("=" * 70 + "\n")
 
 # Load tag and intent mappings
@@ -386,30 +355,12 @@ with open(f"{MODEL_OUTPUT_DIR}/test_results.json", "w") as f:
     json.dump(test_results, f, indent=2)
 print(f"   ✓ Test results saved (test_results.json)")
 
-# ============================================================================
-# Upload Script to Google Drive
-# ============================================================================
-print(f"\n📤 Uploading fine-tuning script to Google Drive...")
-try:
-    import shutil
-    script_dest = f"{SCRIPT_OUTPUT_DIR}/fine_tune_colab.py"
-    shutil.copy(__file__, script_dest)
-    print(f"   ✓ Script uploaded to: {script_dest}")
-except Exception as e:
-    print(f"   ⚠️  Could not upload script: {e}")
-
 print("\n" + "=" * 70)
 print("✅ FINE-TUNING COMPLETE!")
 print("=" * 70)
-print("\n📂 Output Locations (Google Drive):")
-print(f"   Model:    /My Drive/xlm_roberta_model_finetuned/")
-print(f"   Data:     /My Drive/data/")
-print(f"   Script:   /My Drive/fine_tune_colab.py")
+print("\n📂 Output Location (Google Drive):")
+print(f"   /My Drive/xlm_roberta_model_finetuned/")
 print("\n📊 Final Results:")
 print(f"   Loss:     {test_results.get('eval_loss', 'N/A')}")
 print(f"   Epoch:    {test_results.get('epoch', 'N/A')}")
-print("\n🚀 Next Steps:")
-print("   1. Download the fine-tuned model from Google Drive")
-print("   2. Use manual_test.py to test the new model")
-print("   3. Update MODEL_DIR = './model_finetuned' in manual_test.py")
 print("\n" + "=" * 70)
