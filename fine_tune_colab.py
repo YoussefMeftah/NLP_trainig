@@ -320,13 +320,15 @@ training_args = TrainingArguments(
     learning_rate=1e-5,
     weight_decay=0.01,
     logging_steps=50,
-    eval_strategy="steps",  # Changed from evaluation_strategy
+    eval_strategy="steps",
     eval_steps=100,
     save_strategy="steps",
     save_steps=100,
     save_total_limit=2,
+    load_best_model_at_end=True,
+    metric_for_best_model="eval_loss",
     seed=42,
-    report_to="none",  # Skip W&B reporting to avoid issues
+    report_to="none",
 )
 
 trainer = Trainer(
