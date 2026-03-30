@@ -306,6 +306,11 @@ data_collator = DataCollator(tokenizer)
 # ============================================================================
 print("\n⚙️  Setting up fine-tuning...")
 
+# Move model to device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+print(f"Using device: {device}")
+
 training_args = TrainingArguments(
     output_dir=MODEL_OUTPUT_DIR,
     num_train_epochs=2,
@@ -314,7 +319,6 @@ training_args = TrainingArguments(
     warmup_steps=100,
     learning_rate=1e-5,
     weight_decay=0.01,
-    logging_dir=f"{MODEL_OUTPUT_DIR}/logs",
     logging_steps=50,
     eval_strategy="steps",  # Changed from evaluation_strategy
     eval_steps=100,
@@ -338,7 +342,6 @@ trainer = Trainer(
 # Fine-tune Model
 # ============================================================================
 print("\n🚀 Starting fine-tuning...")
-print(f"Device: {model.device}")
 
 trainer.train()
 
