@@ -26,6 +26,20 @@ from sklearn.metrics import f1_score, precision_recall_fscore_support, accuracy_
 import warnings
 warnings.filterwarnings("ignore")
 import sys
+import subprocess
+
+# ============================================================================
+# Update transformers if needed
+# ============================================================================
+try:
+    from transformers import __version__ as tf_version
+    print(f"Current transformers version: {tf_version}")
+    # Ensure we have a recent version
+    if int(tf_version.split('.')[0]) < 4:
+        print("Updating transformers to a compatible version...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "transformers>=4.20.0"])
+except:
+    pass
 
 # ============================================================================
 # Google Colab Setup
@@ -294,24 +308,21 @@ print("\n⚙️  Setting up fine-tuning...")
 
 training_args = TrainingArguments(
     output_dir=MODEL_OUTPUT_DIR,
-    num_train_epochs=2,  # Fine-tune for 2 epochs (not 3+)
+    num_train_epochs=2,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=16,
     warmup_steps=100,
-    learning_rate=1e-5,  # Lower learning rate for fine-tuning
+    learning_rate=1e-5,
     weight_decay=0.01,
     logging_dir=f"{MODEL_OUTPUT_DIR}/logs",
     logging_steps=50,
-    evaluation_strategy="steps",
+    eval_strategy="steps",  # Changed from evaluation_strategy
     eval_steps=100,
     save_strategy="steps",
     save_steps=100,
-    load_best_model_at_end=True,
-    metric_for_best_model="ner_f1",
-    greater_is_better=True,
     save_total_limit=2,
     seed=42,
-    fp16=torch.cuda.is_available(),  # Mixed precision if GPU available
+    report_to="none",  # Skip W&B reporting to avoid issues
 )
 
 trainer = Trainer(
