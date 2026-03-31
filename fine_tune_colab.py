@@ -206,11 +206,14 @@ try:
         model_path = f"{OLD_MODEL_DIR}/model.safetensors"
         if Path(model_path).exists():
             state_dict = load_file(model_path)
-            # Only load compatible weights
-            model_state = model.state_dict()
-            compatible_weights = {k: v for k, v in state_dict.items() if k in model_state}
-            model.load_state_dict(compatible_weights, strict=False)
-            print(f"✓ Loaded {len(compatible_weights)}/{len(state_dict)} weights from existing model")
+            # Load only encoder weights (dimensions should match)
+            encoder_weights = {k.replace("encoder.", ""): v for k, v in state_dict.items() if k.startswith("encoder.")}
+            if encoder_weights:
+                model.encoder.load_state_dict(encoder_weights, strict=False)
+                print(f"✓ Loaded encoder weights from existing model ({len(encoder_weights)} layers)")
+                print("⚠️  Classifier heads reinitialized (NER classes changed from 7 → 9)")
+            else:
+                print("⚠️  No encoder weights found, will train from scratch")
         else:
             print("⚠️  model.safetensors not found, will train from scratch")
     except Exception as e:
