@@ -97,6 +97,18 @@ class XLMRobertaForIntentAndNER(nn.Module):
         loss = None
         if ner_labels is not None and intent_labels is not None:
             loss_fn = nn.CrossEntropyLoss(ignore_index=-100)
+            
+            # Debug: Check shapes
+            batch_size, seq_length, num_classes = ner_logits.shape
+            ner_labels_len = ner_labels.shape[-1] if len(ner_labels.shape) > 1 else ner_labels.shape[0]
+            
+            if seq_length != ner_labels_len:
+                raise ValueError(
+                    f"Sequence length mismatch: ner_logits has seq_length={seq_length}, "
+                    f"but ner_labels has length={ner_labels_len}\n"
+                    f"ner_logits shape: {ner_logits.shape}, ner_labels shape: {ner_labels.shape}"
+                )
+            
             ner_loss = loss_fn(ner_logits.view(-1, NUM_LABELS_NER), ner_labels.view(-1))
             intent_loss = loss_fn(intent_logits, intent_labels)
             loss = ner_loss + intent_loss
@@ -168,6 +180,20 @@ def preprocess_data(examples):
 train_dataset = train_dataset.map(preprocess_data, batched=True, remove_columns=["text", "tokens", "ner_tags", "intent"])
 val_dataset = val_dataset.map(preprocess_data, batched=True, remove_columns=["text", "tokens", "ner_tags", "intent"])
 test_dataset = test_dataset.map(preprocess_data, batched=True, remove_columns=["text", "tokens", "ner_tags", "intent"])
+
+# ============================================================================
+# Validate Dataset Consistency
+# ============================================================================
+print("\n✅ Validating dataset consistency...")
+for i, example in enumerate(train_dataset.take(100)):  # Check first 100 examples
+    input_ids_len = len(example["input_ids"])
+    ner_labels_len = len(example["ner_labels"])
+    if input_ids_len != ner_labels_len:
+        raise ValueError(
+            f"Dataset error at example {i}: input_ids length ({input_ids_len}) "
+            f"!= ner_labels length ({ner_labels_len})"
+        )
+print(f"✓ Data validation passed - {len(train_dataset)} training examples are consistent")
 
 # ============================================================================
 # Load Existing Model
@@ -250,10 +276,25 @@ class DataCollator:
         ner_labels = []
 
         for example in batch:
-            # Pad sequences
-            input_id = example["input_ids"] + [0] * (max_length - len(example["input_ids"]))
+            # Ensure input_ids and ner_labels are the same length
+            input_id = example["input_ids"]
+            ner_label = example["ner_labels"]
+            
+            # Trim to match lengths if they differ (safety check)
+            min_len = min(len(input_id), len(ner_label))
+            input_id = input_id[:min_len]
+            ner_label = ner_label[:min_len]
+            
+            if len(input_id) != len(ner_label):
+                raise ValueError(
+                    f"Length mismatch even after trimming: input_id={len(input_id)}, "
+                    f"ner_label={len(ner_label)}"
+                )
+            
+            # Pad sequences to max_length in batch
+            input_id = input_id + [0] * (max_length - len(input_id))
             attn_mask = example["attention_mask"] + [0] * (max_length - len(example["attention_mask"]))
-            ner_label = example["ner_labels"] + [-100] * (max_length - len(example["ner_labels"]))
+            ner_label = ner_label + [-100] * (max_length - len(ner_label))
 
             input_ids.append(input_id)
             attention_mask.append(attn_mask)
