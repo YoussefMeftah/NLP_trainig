@@ -48,11 +48,8 @@ IS_COLAB = setup_colab()
 # ============================================================================
 # Configuration & Setup
 # ============================================================================
-# Set data directory based on environment
-if IS_COLAB:
-    DATA_DIR = "/content/drive/MyDrive/data"
-else:
-    DATA_DIR = "./data"
+# Set data directory to Google Drive
+DATA_DIR = "/content/drive/MyDrive/data"
 
 MAX_LENGTH = 128
 
